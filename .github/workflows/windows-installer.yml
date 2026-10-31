@@ -1,0 +1,41 @@
+name: Windows installer
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  windows:
+    runs-on: windows-2022
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Locate installer compiler
+        shell: pwsh
+        run: |
+          if (!(Test-Path 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe')) {
+            choco install innosetup --yes --no-progress
+            if ($LASTEXITCODE) { throw 'Inno Setup installation failed' }
+          }
+      - name: Compile, test and package Windows x64
+        shell: pwsh
+        run: ./scripts/build-windows.ps1
+      - name: Upload Windows installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: TheTits-0.3.1-Windows-x64
+          path: |
+            output/TheTits-0.3.1-Windows-x64-unsigned.exe
+            output/TheTits-0.3.1-Windows-x64-unsigned.exe.sha256
+          if-no-files-found: error
+      - name: Upload verification reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Windows-verification
+          path: |
+            build-windows/Testing/Temporary/LastTest.log
+            build-windows/output/*.csv
+            build-windows/output/test-results.txt
+          if-no-files-found: ignore
