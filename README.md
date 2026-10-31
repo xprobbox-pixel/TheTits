@@ -51,7 +51,7 @@ cmake --build build-debug --parallel 6
 
 In this workspace CMake/CTest are available as `../.tools/bin/cmake` and `../.tools/bin/ctest`. Apple command-line tools are sufficient; Xcode's GUI is not required. Binaries are in `build[-universal]/TheTits_artefacts/Release/{AU,VST3,Standalone}`.
 
-Windows: Visual Studio 2022 C++ desktop tools, Windows SDK and CMake. Run `scripts/build-windows.ps1`; compile the x64 installer with Inno Setup 6: `ISCC scripts/windows-installer.iss`. For Debug use `cmake --build build-windows --config Debug`. A Windows compiler/SDK is not present on this Mac; the Windows installer script is supplied, with no fabricated EXE installer.
+Windows: Visual Studio 2022 C++ desktop tools, Windows SDK and CMake. Run `scripts/build-windows.ps1` to configure Visual Studio 2022 x64 with static CRT, build, run CTest and compile the installer with Inno Setup. Use `-SkipInstaller` to build/test only. Inno Setup 6.3+ must be installed or ISCC.exe placed on PATH. The GitHub Actions workflow `.github/workflows/windows-installer.yml` runs this pipeline on Windows and uploads the EXE and SHA-256 checksum. For Debug use `cmake --build build-windows --config Debug`. The native Windows x64 build and installer were successfully compiled and tested on GitHub Actions; see [Windows test report](docs/WINDOWS-TEST-REPORT.md).
 
 ## Installers and installation
 
